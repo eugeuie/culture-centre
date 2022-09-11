@@ -1,13 +1,26 @@
-{% load static %}
+{% extends "base.html" %}
 
-<link rel="stylesheet" href="{% static 'polls/style.css' %}">
+{% block content %}
+    {% if events %}
+        {% for event in events %}
+            <h2><a href="{% url 'events:detail' event.id %}">{{ event.title }}</a></h2>
+            <p>{{ event.description }}</p>
+            <p>{{ event.category | lower }} · {{ event.time | date:'d b Y, H:i' }}</p>
+        {% endfor %}
+    {% else %}
+        Нет событий
+    {% endif %}
+{% endblock %}
 
-{% if events %}
-    <ul>
-    {% for event in events %}
-        <li><a href="{% url 'detail' event.id %}">{{ event.title }}</a></li>
-    {% endfor %}
-    </ul>
-{% else %}
-    <p>No events are available.</p>
-{% endif %}
+{% block submenu %}
+    <div class="list-group mb-3 mt-4">
+        <a class="list-group-item list-group-item-action" href="{% url 'events:index' %}">
+            Все события
+        </a>
+        {% for category in categories %}
+            <a class="list-group-item list-group-item-action" href="{% url 'events:category' category.pk %}">
+                {{ category }}
+            </a>
+        {% endfor %}
+    </div>
+{% endblock %}
